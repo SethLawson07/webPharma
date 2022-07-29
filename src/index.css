@@ -1,3 +1,56 @@
+.Nav{
+  background-color: #008065;
+}
+.Nav1{
+	background-color: #008065;
+  }
+.text1{
+	color: #ffffff;
+	font-size: 15px;
+}  
+.text{
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+  -webkit-transition: color 2s;
+    transition: color 2s;
+}
+.container1{
+  background-color: #008065;
+  position: relative;
+	overflow: hidden;
+	padding-top: 1rem;
+	padding-bottom: 15rem;
+}
+.container1 .ocean { 
+	height: 2%;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background: #ffffff;
+}
+
+.container1 .wave {
+	background: url('wave.svg') repeat-x; 
+	position: absolute;
+	top: -190px;
+	width: 6400px;
+	height: 198px;
+	animation: wave 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
+	transform: translate3d(0, 0, 0);
+}
+
+
+.header .wave:nth-of-type(2) {
+	top: -170px;
+	animation: wave 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+	opacity: 1;
+}
+
+.container2{
+  background-color: white;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -11,3 +64,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.badge{
+  background-color: #00c09b;
+  color: #00c09b;
+}
+
+ 
+/* Wave Animation */
+@keyframes wave {
+	0% {
+		margin-left: 0;
+	}
+	100% {
+		margin-left: -1600px;
+	}
+}
+
+@keyframes swell {
+	0%, 100% {
+		transform: translate3d(0,-25px,0);
+	}
+	50% {
+		transform: translate3d(0,5px,0);
+	}
+}
+/* end of wave animation */
+
