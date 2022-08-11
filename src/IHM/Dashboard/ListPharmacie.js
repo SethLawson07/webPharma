@@ -2,14 +2,16 @@ import React,{useState,useEffect} from "react";
 import {Button,Alert,Navbar,Nav,NavDropdown,Container,Table,Row,Col,Stack,Form} from  'react-bootstrap';
 import { Link } from 'react-router-dom';
 import  *  as Icon from "react-bootstrap-icons";
-import  {db} from './firebase'
-import {collection, query, orderBy, onSnapshot,doc,updateDoc} from "firebase/firestore"
+import  {db} from '../../config/firebase'
+import {collection, query, orderBy, onSnapshot,doc,updateDoc,where} from "firebase/firestore"
 
 
 export default function ListPharmacie () {
 
   const [pharmacie, setPharmacie] = useState();
+  const [pharmacieSearch, setPharmaciesearch] = useState();
   let [counter, setcounter] = useState(1);
+  const [search, setSearch] = useState('');
 
 
  
@@ -18,6 +20,17 @@ export default function ListPharmacie () {
     )
     onSnapshot(q, (querySnapshot) => {
       setPharmacie(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        data: doc.data()
+      })))
+    })
+  }
+
+  const getPharmacySearch = () => {
+    const q = query(collection(db, 'Pharmacie'),where('Nom','==',search)//, orderBy('created', 'desc')
+    )
+    onSnapshot(q, (querySnapshot) => {
+      setPharmaciesearch(querySnapshot.docs.map(doc => ({
         id: doc.id,
         data: doc.data()
       })))
@@ -70,41 +83,14 @@ export default function ListPharmacie () {
   
       }
 
-  /*const updateTrue = async (id) => {
-    var pharmacieRef = db.collection("Pharmacie").doc(id);
+     
 
-    
-      return pharmacieRef.update({
-          Certificate: true
-      })
-      .then(() => {
-          console.log("Document successfully updated!");
-      })
-      .catch((error) => {
-          // The document probably doesn't exist.
-          console.error("Error updating document: ", error);
-      });
-  }
-
-  const updateFalse = async (id) => {
-    var pharmacieRef = db.collection("Pharmacie").doc(id);
-
-    
-      return pharmacieRef.update({
-          Certificate: false
-      })
-      .then(() => {
-          console.log("Document successfully updated!");
-      })
-      .catch((error) => {
-          // The document probably doesn't exist.
-          console.error("Error updating document: ", error);
-      });
-  }
-*/
+  
 
     useEffect(() => {
-      (getPharmacy)()
+      getPharmacy();
+  getPharmacySearch();
+      
      
     }, )
     
@@ -123,7 +109,10 @@ export default function ListPharmacie () {
     </Col>
     <Col xs={6} md={3}>
     <Stack direction="horizontal" gap={1}>
-  <Form.Control className="me-auto" placeholder="Search" />
+  <Form.Control className="me-auto" placeholder="Search"
+    onChange={(e) => setSearch(e.target.value)} 
+    value={search}
+  />
   <Button variant="success">
   <Icon.Search color="white" size={20}/>
   </Button>
@@ -136,14 +125,17 @@ export default function ListPharmacie () {
   </Row>
   <br/>
     <Container>
-   
+   {search ==''  ?
     <Table striped bordered hover variant="dark">
+
   <thead>
     <tr>
       <th>#</th>
       <th>Nom</th>
       <th>Tél</th>
       <th>Assurances</th>
+      <th>Commune</th>
+      <th>Localite</th>
     
       <th>Certification</th>
       
@@ -156,13 +148,15 @@ export default function ListPharmacie () {
               <td>{data.Nom}</td>
               <td>{data.NumeroTel}</td>
               <td>{data.Assurance}</td>
+              <td>{data.Commune} </td>
+              <td>{data.Localite} </td>
               <td>{data.Certificate ? 
-               <Button variant="danger"  className='text-right' onClick={() => updateFalse(id)}><Icon.HandThumbsDown color="white" size="25"/></Button>
+               <Button variant="success"  className='text-right' onClick={() => updateFalse(id)}><Icon.CheckSquareFill color="white" size="25"/></Button>
               :              
-              <Button variant="success"  className='text-right'   onClick={() => {
+              <Button variant="danger"  className='text-right'   onClick={() => {
                 updateTrue(id);
               }}
-               ><Icon.HandThumbsUp color="white" size="25"/></Button>
+               ><Icon.XSquareFill color="white" size="25"/></Button>
             
           
               }</td>
@@ -172,8 +166,49 @@ export default function ListPharmacie () {
           ))}
    
   </tbody>
-</Table>
-
+</Table> :
+<Table striped bordered hover variant="dark">
+      
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Nom</th>
+      <th>Tél</th>
+      <th>Assurances</th>
+      <th>Commune</th>
+      <th>Localite</th>
+    
+      <th>Certification</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+  {pharmacieSearch?.map(({ id, data }) => (
+            <tr >
+              <td>{counter++}</td>
+              <td>{data.Nom}</td>
+              <td>{data.NumeroTel}</td>
+              <td>{data.Assurance}</td>
+              <td>{data.Commune} </td>
+              <td>{data.Localite} </td>
+              <td>{data.Certificate ? 
+               <Button variant="success"  className='text-right' onClick={() => updateFalse(id)}><Icon.CheckSquareFill color="white" size="25"/></Button>
+              :              
+              <Button variant="danger"  className='text-right'   onClick={() => {
+                updateTrue(id);
+              }}
+               ><Icon.XSquareFill color="white" size="25"/></Button>
+            
+          
+              }</td>
+              
+              
+            </tr>
+          ))}
+   
+  </tbody>
+  </Table>
+}
 </Container>
 
 

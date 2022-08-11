@@ -1,10 +1,10 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import { Button,Modal,Form,Container, Table,InputGroup,FormControl ,Row,Col,Stack } from "react-bootstrap";
 import NavDash from "./components/Navbar";
 import * as Icon from 'react-bootstrap-icons'
 import { Link } from "react-router-dom";
-import  {db} from './firebase'
-import {collection, query, orderBy, onSnapshot,addDoc,deleteDoc,updateDoc,doc, Timestamp} from "firebase/firestore"
+import  {db} from '../../config/firebase'
+import {collection, query, orderBy, onSnapshot,addDoc,deleteDoc,updateDoc,doc,setDoc,where, Timestamp} from "firebase/firestore"
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function ListAdmin () {
@@ -13,48 +13,69 @@ export default function ListAdmin () {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [nom, setNom] = useState(null);
-  const [prenom, setPrenom] = useState(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [nom, setNom] = useState('');
+  const [prenom, setPrenom] = useState('');
   const [numeroTel, setNumeroTel] = useState('+228')
+  const [admin, setAdmin] = useState()
+  let [counter, setCounter] = useState(1);
 
 
   const validateFormAdd = (e) => {
     //Variable Regex pour valider les champs   
     const num = /^\+228\d{8}$/
     const re1 =/[^A-zÀ-ú 0-9\-(.,;:)]/g  
+    const re = /\S+@\S+\.\S+/
 
   
     if(!nom  || re1.test(nom)) alert("Le nom n'est pas valide.🙂")
-    else if (!prenom  || re1.test(prenom)) alert("Le prenom n'est pas valide.🙂")
+   else if (!prenom  || re1.test(prenom)) alert("Le prenom n'est pas valide.🙂")
     else if(!numeroTel || numeroTel.length !=12  ) alert("Le numéro de téléphone n'est pas valide.🙂")
-    else if(!numeroTel.test(numeroTel)  ) alert("Le numéro de téléphone est incorrect : Ex : +22897997966")
-    else {handleSignUp(e)}
+    else if(!num.test(numeroTel) && numeroTel.length!=12  ) alert("Le numéro de téléphone est incorrect : Ex : +22897997966")
+    else if (!email || !re.test(email) ) alert('Oups ! Nous avons besoin d\'une adresse e-mail valide.🙂')
+    else if (!password || password.length < 6) alert("Le mot de passe doit comporter au moins 6 caractères et au maximum 12 🧐."); 
+    else {handleSubmit(e)}
   
     
   }
 
 
-   /* function to add new iadmin to firestore */
-const handleSubmit = async (e) => {
-  e.preventDefault()
-  try {
-    await addDoc(collection(db, 'Administrateur'), {
-      Nom: nom,
-      Prenom : prenom,
-      NumeroTel : numeroTel,
-      Niveau : false,
-      created: Timestamp.now()
-    });
-  alert(" succès! ✅")
-  handleClose()
+   /* function to add new admin to firestore */
+
+  /* function to add new insurance to firestore */
+  const handleSubmit = async (e) => {
+    e.preventDefault()
   
-  setNom('')
-  } catch (err) {
-    alert(" Echec! ❌ Veuillez réessayer")
+    //Création d'un nouveau document dans Firebase
+    const myDoc = doc(db, "Administrateur",email)
+  
+    const docData = {
+      "Nom": nom,
+        "Prenom" : prenom,
+        "NumeroTel" : numeroTel,
+        "Niveau" : false,
+        "Etat" : false,          
+        "created": Timestamp.now()
+        
+       
+    }
+
+    setDoc(myDoc, docData)
+      // Handling Promises
+      .then(() => {
+        //Message Succès
+        handleSignUp()
+        alert("Compte créé avec succès! ✅")
+        handleClose();
+        setNom('');setPrenom('');setNumeroTel('');setEmail('');
+      })
+      .catch((error) => {
+        // Message Echec
+        alert(" Echec! ❌ Veuillez réessayer")
+      })
   }
-}
+   
 
 
          //Fonction pour créer un admin
@@ -66,10 +87,69 @@ const handleSubmit = async (e) => {
       const user = userCredential.user;
          // console.log('Registered with:', user.email);
          //console.log('Registered with oklm:', user.uid);      
-      handleSubmit()           
+     // handleSubmit()           
      })
     .catch((error) => {             
     });}
+
+    const updateTrue = async (id) => {
+      try {
+  
+      const updateRef = doc(db, "Administrateur",id);
+  
+      // Set the "Etat" field of the pharmacy
+      await updateDoc(updateRef, {
+        Etat: true
+       
+    });
+        alert(" succès! ✅")
+        
+      } catch (error) {
+      //  console.log(error);
+        alert(" Echec! ❌ Veuillez réessayer")
+       
+      }
+      
+  
+      }
+  
+      const updateFalse = async (id) => {
+        try {
+    
+        const updateRef = doc(db, "Administrateur",id);
+    
+        // Set the "Etat" field of the pharmacy
+        await updateDoc(updateRef, {
+          Etat: false
+         
+      });
+          alert(" succès! ✅")
+          
+        } catch (error) {
+        //  console.log(error);
+          alert(" Echec! ❌ Veuillez réessayer")
+         
+        }
+        
+    
+        }
+
+    useEffect(() => {
+      const q = query(collection(db, 'Administrateur'),where('Prenom','!=','seth')//, orderBy('created', 'desc')
+     //("latesethlawsonhetchely@gmail.com")
+      )
+      onSnapshot(q, (querySnapshot) => {
+        setAdmin(querySnapshot.docs.map(doc => ({
+         id: doc.id,
+          data: doc.data()
+        })))
+      })
+     
+    }, [admin]);
+    
+    /*const unsub = onSnapshot(doc(db, "cities", "SF"), (doc) => {
+      console.log("Current data: ", doc.data());*/
+  
 
     return <>
    
@@ -110,49 +190,32 @@ const handleSubmit = async (e) => {
     <tr>
       <th>#</th>
       <th>Nom</th>
-      <th>prenom</th>
-      <th>Niveau</th>
+      <th>prenom </th>
+      <th>Tél</th>
+      <th>Email</th>
       <th></th>
-      <th></th>
+    
+    
     </tr>
   </thead>
   <tbody>
+  {admin?.map(({ id, data }) => (  
     <tr>
-      <td>1</td>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>1</td>
+      <td>{counter++}</td>
+      <td>{data.Nom}</td>
+      <td>{data.Prenom} </td>
+      <td>{data.NumeroTel} </td>
+      <td>{id}</td>
       <td>
-        <Icon.Trash3 color="red" size="25"/>
+        {data.Etat? <Button variant="outline-success" onClick={() => updateFalse(id)}><Icon.CheckSquareFill color="white" size="25"/></Button>  
+        :
+        <Button variant="outline-danger" onClick={() => updateTrue(id)}><Icon.XSquareFill color="white" size="25"/></Button>
+  }
       </td>
-      <td>
-      <Icon.PencilSquare color="blue" size="25"/>
-      </td>
+      
     </tr>
-    <tr>
-      <td>2</td>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>0</td>
-      <td>
-        
-        <Icon.Trash3 color="red" size="25"/>
-      </td>
-      <td>
-      <Icon.PencilSquare color="blue" size="25"/>
-      </td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td colSpan={2}>Larry the Bird</td>
-      <td>0</td>
-      <td>
-        <Icon.Trash3 color="red" size="25"/>
-      </td>
-      <td>
-      <Icon.PencilSquare color="blue" size="25"/>
-      </td>
-    </tr>
+   
+   ))}
   </tbody>
 </Table>
 
@@ -234,16 +297,17 @@ const handleSubmit = async (e) => {
 
     
             </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
+            <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="success" onClick={handleClose}>
+          <Button variant="success" type='submit'>
             Ajouter
           </Button>
         </Modal.Footer>
+          </Form>
+        </Modal.Body>
+       
       </Modal>
 </Container>
     </>

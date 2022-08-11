@@ -1,11 +1,12 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import { Button,Modal,Form,Container, Table,InputGroup,FormControl ,Row,Col } from "react-bootstrap";
 import NavDash from "./components/Navbar";
 import * as Icon from 'react-bootstrap-icons'
-import { Link } from "react-router-dom";
-import  {db} from './firebase'
+import { Link,useParams  } from "react-router-dom";
+import  {db} from '../../config/firebase'
 import {collection, query, orderBy, onSnapshot,addDoc,deleteDoc,updateDoc,doc, Timestamp} from "firebase/firestore"
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 
 export default function ListCompte () {
   const [show, setShow] = useState(false);
@@ -18,6 +19,23 @@ export default function ListCompte () {
   const [nom, setNom] = useState();
   const [prenom, setPrenom] = useState();
   const [numeroTel, setNumeroTel] = useState()
+  const [admin, setAdmin] = useState()
+  const { id } = useParams()
+  
+
+
+
+  useEffect(() => {
+    const q = query(collection(db, 'Administrateur')//, orderBy('created', 'desc')
+    )
+    onSnapshot(q, (querySnapshot) => {
+      setAdmin(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        data: doc.data()
+      })))
+    })
+   
+  }, [admin]);
 
   
 
@@ -31,7 +49,7 @@ export default function ListCompte () {
    
     </Col>
     <Col xs={6} md={4}>
-    <p className="text-center">Mes Informations &nbsp;
+    <p className="text-center">Mes Informations {id} &nbsp;
      <Button variant="success"  className='text-right' >  <Icon.FileEarmarkPerson  color="white" size={25}/></Button>{' '}
   
     </p>
@@ -51,25 +69,23 @@ export default function ListCompte () {
       
       <th>Nom</th>
       <th>prenom</th>
-      <th>Niveau</th>
-      <th>Email</th>
-      <th></th>
+      <th>Tél {email}</th>
+ 
+      
       
     </tr>
   </thead>
   <tbody>
+  {admin?.map(({ id, data }) => (  
     <tr>
       
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>Email</td>
-      <td>1</td>
-      <td>
-      <Button variant="success"  className='text-right' onClick={handleShow}>  <Icon.PencilSquare  color="white" size={25}/></Button>{' '}
-      </td>
+      <td>{data.Nom}</td>
+      <td>{data.Prenom} </td>
+      <td>{data.NumeroTel} </td>
+      
       
     </tr>
-   
+     ))}
     
   </tbody>
 </Table>

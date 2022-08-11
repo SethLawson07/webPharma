@@ -26,7 +26,7 @@ export default function Presentation() {
     <Col><img src={img3} className="App-logo" alt="logo" height={200}/></Col>
   </Row>
   <Row className='text-center'>
-  <Col ><em> &nbsp; &nbsp; Rechercher les plus proches de vous en un seul clic </em></Col>
+  <Col ><em> &nbsp; &nbsp; Rechercher les pharmacies plus proches de vous en un seul clic </em></Col>
   <Col><em>Accédez rapidement à la liste des pharmacies ouvertes en temps réels</em></Col>
   <Col><em>Rentrer en contact avec les pharmacies pour verifier la disponibilité de vos produits pharmaceutique</em></Col>
   </Row>

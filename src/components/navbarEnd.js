@@ -7,7 +7,7 @@ export default function NavbarEnd() {
     return <>
       <Navbar className="Nav1 text1">
     <Container>
-      <Navbar.Brand href="#home"><p className="text1">Copyright © 2022 InPharma, tous droits réservés.</p></Navbar.Brand>
+      <Navbar.Brand href="#home"><p className="text1">Copyright © 2022 Inpharma | <a href="http://www.globalsparkcorporation.com/"> Spark Corporation</a>, tous droits réservés.</p></Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse className="justify-content-end">
         <Navbar.Text>

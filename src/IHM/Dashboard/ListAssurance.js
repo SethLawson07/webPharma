@@ -3,8 +3,8 @@ import { Button,Modal,Form,Container, Table,InputGroup,FormControl ,Row,Col ,Sta
 import NavDash from "./components/Navbar";
 import * as Icon from 'react-bootstrap-icons'
 import { Link } from "react-router-dom";
-import  {db} from './firebase'
-import {collection, query, orderBy, onSnapshot,addDoc,deleteDoc,updateDoc,doc, Timestamp} from "firebase/firestore"
+import  {db} from '../../config/firebase'
+import {collection, query, orderBy, onSnapshot,addDoc,deleteDoc,updateDoc,doc,setDoc,where, Timestamp,startAt} from "firebase/firestore"
 
 export default function ListAssurance () {
  
@@ -12,6 +12,7 @@ export default function ListAssurance () {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [nom, setNom] = useState('');
+  const [search, setSearch] = useState('');
   const [nomUpdate, setNomUpdate] = useState();
   const [idUpdate, setIdUpdate] = useState();
   const [showUpdate, setShowUpdate] = useState(false);
@@ -22,7 +23,9 @@ export default function ListAssurance () {
     setIdUpdate(id)
   }
   const [assurance, setAssurance] = useState();
+  const [assurance1, setAssurance1] = useState();
   let [counter, setCounter] = useState(1);
+  
   
   const validateFormAdd = (e) => {
     //Variable Regex pour valider le champs nom de l'assurance   
@@ -117,9 +120,9 @@ const handleDelete = async (id) => {
   }
 }
 
-
-  useEffect(() => {
-    const q = query(collection(db, 'Assurance')//, orderBy('created', 'desc')
+  const getInsurance = () => {
+    const q = query(collection(db, 'Assurance')//.endAt(2)//, orderBy('created', 'desc')
+  
     )
     onSnapshot(q, (querySnapshot) => {
       setAssurance(querySnapshot.docs.map(doc => ({
@@ -128,6 +131,25 @@ const handleDelete = async (id) => {
       })))
     })
     console.log({ assurance });
+  }
+
+  const getInsurance1 = () => {
+    const q = query(collection(db, 'Assurance'),where('Nom','==',search)//.endAt(2)//, orderBy('created', 'desc')
+  
+    )
+    onSnapshot(q, (querySnapshot) => {
+      setAssurance1(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        data: doc.data()
+      })))
+    })
+    //console.log({ assurance });
+  }
+
+
+  useEffect(() => {
+    getInsurance();
+    getInsurance1();
   }, [assurance]);
   
   
@@ -144,7 +166,10 @@ const handleDelete = async (id) => {
     <Col xs={6} md={3}>
     
     <Stack direction="horizontal" gap={1}>
-  <Form.Control className="me-auto" placeholder="Search" />
+  <Form.Control className="me-auto" placeholder="Search"  
+  onChange={(e) => setSearch(e.target.value)} 
+  value={search}
+  />
   <Button variant="success">
   <Icon.Search color="white" size={20}/>
   </Button>
@@ -163,43 +188,86 @@ const handleDelete = async (id) => {
   </Row>
     <br/>
     <Container>
+
+      {search=='' ?
+
+        <Table striped bordered hover variant="dark">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nom</th>
+            
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {assurance?.map(({ id, data }) => (
+                  <tr >
+                    <td>{counter++}</td>
+                    <td>{data.Nom}  </td>
+                    
+                    
+                   
+                  <td>
+                    
+                  <Icon.PencilSquare color="white" onClick={() => handleShowUpdate(id,data.Nom)}  size="25"/>
+                  </td>
+                  <td>
+                    <Button variant="Light" onClick={() => {handleDelete(id)}}>
+                    <Icon.Trash3 color="white" size="25"/>
+                    </Button>
+                   
+                  </td>
+                    
+                  </tr>
+                ))}
+          
+              
+             
+        </tbody>
+      </Table>
+
+      :
+      <Table striped bordered hover variant="dark">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nom</th>
+            
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {assurance1?.map(({ id, data }) => (
+                  <tr >
+                    <td>{counter++}</td>
+                    <td>{data.Nom}  </td>
+                    
+                    
+                   
+                  <td>
+                    
+                  <Icon.PencilSquare color="white" onClick={() => handleShowUpdate(id,data.Nom)}  size="25"/>
+                  </td>
+                  <td>
+                    <Button variant="Light" onClick={() => {handleDelete(id)}}>
+                    <Icon.Trash3 color="white" size="25"/>
+                    </Button>
+                   
+                  </td>
+                    
+                  </tr>
+                ))}
+          
+              
+             
+        </tbody>
+      </Table>
+      }
    
-    <Table striped bordered hover variant="dark">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Nom</th>
-      
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  {assurance?.map(({ id, data }) => (
-            <tr >
-              <td>{counter++}</td>
-              <td>{data.Nom}  </td>
-              
-              
-             
-            <td>
-              
-            <Icon.PencilSquare color="white" onClick={() => handleShowUpdate(id,data.Nom)}  size="25"/>
-            </td>
-            <td>
-              <Button variant="Light" onClick={() => {handleDelete(id)}}>
-              <Icon.Trash3 color="white" size="25"/>
-              </Button>
-             
-            </td>
-              
-            </tr>
-          ))}
     
-        
-       
-  </tbody>
-</Table>
 
 
 <Modal show={show} onHide={handleClose}>

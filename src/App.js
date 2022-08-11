@@ -1,5 +1,7 @@
-import { BrowserRouter, Routes, Route,Link } from "react-router-dom";
+import React, { useContext, createContext, useState } from "react";
+import { BrowserRouter as Router, Routes, Route,Link ,Redirect} from "react-router-dom";
 import logo from './logo.svg';
+import { useHistory } from "react-router-dom"
 //import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CCarousel from './components/carousel';
@@ -16,13 +18,17 @@ function App() {
     <Routes>
         <Route path="/" element={ <Home/> } />
         <Route path="Login" element={ <Login/> } />
-        <Route path="Dashboard" element={<Dashboard/>}/>
+        <Route path="Dashboard/:id" element={<Dashboard/>}/>
         <Route path="Admin" element={<ListAdmin/>}/>
         <Route path="Create" element={<CreateAdmin/>}/>
         <Route path="*" element={<Home/>}/>
+
+
         
       </Routes>
+      
   );
 }
+
 
 export default App;

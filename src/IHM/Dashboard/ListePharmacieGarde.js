@@ -2,14 +2,16 @@ import React,{useState,useEffect} from "react";
 import {Button,Alert,Container,Table,Row,Col,Stack,Form} from  'react-bootstrap';
 import { Link } from 'react-router-dom';
 import  *  as Icon from "react-bootstrap-icons";
-import  {db} from './firebase'
-import {collection, query, orderBy, onSnapshot,doc,updateDoc} from "firebase/firestore"
+import  {db} from '../../config/firebase'
+import {collection, query, orderBy, onSnapshot,doc,updateDoc,where} from "firebase/firestore"
 
 
 export default function ListPharmacieGarde () {
 
   const [pharmacie, setPharmacie] = useState();
   let [counter, setcounter] = useState(1);
+  const [search, setSearch] = useState('');
+  const [pharmacieSearch, setPharmacieSearch] = useState();
 
  
   const getPharmacy = () => {
@@ -17,6 +19,17 @@ export default function ListPharmacieGarde () {
     )
     onSnapshot(q, (querySnapshot) => {
       setPharmacie(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        data: doc.data()
+      })))
+    })
+  }
+
+  const getPharmacySearch = () => {
+    const q = query(collection(db, 'Pharmacie'),where('Nom','==',search)//, orderBy('created', 'desc')
+    )
+    onSnapshot(q, (querySnapshot) => {
+      setPharmacieSearch(querySnapshot.docs.map(doc => ({
         id: doc.id,
         data: doc.data()
       })))
@@ -66,10 +79,12 @@ export default function ListPharmacieGarde () {
   
       }
 
-    useEffect(() => {
-      (getPharmacy)()
-     // (UpdateTrue)()
-    }, )
+      useEffect(() => {
+        getPharmacy();
+    getPharmacySearch();
+        
+       
+      }, )
     
 
     return <>
@@ -86,9 +101,14 @@ export default function ListPharmacieGarde () {
     </Col>
     <Col xs={6} md={3}>
     <Stack direction="horizontal" gap={1}>
-  <Form.Control className="me-auto" placeholder="Search" />
+  <Form.Control className="me-auto" placeholder="Search"
+  onChange={(e) => setSearch(e.target.value)} 
+  value={search}
+  />
   <Button variant="success">
-  <Icon.Search color="white" size={20}/>
+  <Icon.Search color="white" size={20}
+  
+  />
   </Button>
   
   
@@ -99,7 +119,7 @@ export default function ListPharmacieGarde () {
   </Row>
   <br/>
     <Container>
-   
+   {search =='' ?
     <Table striped bordered hover variant="dark">
   <thead>
     <tr>
@@ -108,7 +128,7 @@ export default function ListPharmacieGarde () {
       <th>Tél</th>
      
     
-      <th>Activer la garde</th>
+      <th>Garde</th>
       
     </tr>
   </thead>
@@ -120,10 +140,43 @@ export default function ListPharmacieGarde () {
               <td>{data.NumeroTel}</td>
               
               <td>{data.Degarde ? 
-             <Button variant="danger"  className='text-right' onClick={() => updateFalse(id)}><Icon.HandThumbsDown color="white" size="25"/></Button>
+             <Button variant="success"  className='text-right' onClick={() => updateFalse(id)}><Icon.CheckSquareFill color="white" size="25"/></Button>
               :              
               
-              <Button variant="success"  className='text-right' onClick={() => updateTrue(id)} ><Icon.HandThumbsUp color="white" size="25"/></Button>
+              <Button variant="danger"  className='text-right' onClick={() => updateTrue(id)} ><Icon.XSquareFill color="white" size="25"/></Button>
+              }</td>
+              
+              
+            </tr>
+          ))}
+   
+  </tbody>
+</Table> : 
+  
+<Table striped bordered hover variant="dark">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Nom</th>
+      <th>Tél</th>
+     
+    
+      <th>Garde</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+  {pharmacieSearch?.map(({ id, data }) => (
+            <tr >
+              <td>{counter++}</td>
+              <td>{data.Nom}</td>
+              <td>{data.NumeroTel}</td>
+              
+              <td>{data.Degarde ? 
+             <Button variant="success"  className='text-right' onClick={() => updateFalse(id)}><Icon.CheckSquareFill color="white" size="25"/></Button>
+              :              
+              
+              <Button variant="danger"  className='text-right' onClick={() => updateTrue(id)} ><Icon.XSquareFill color="white" size="25"/></Button>
               }</td>
               
               
@@ -132,6 +185,7 @@ export default function ListPharmacieGarde () {
    
   </tbody>
 </Table>
+}
 
 </Container>
 
