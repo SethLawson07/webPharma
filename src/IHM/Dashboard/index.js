@@ -138,7 +138,7 @@ export default function Dashboard () {
    
 <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modifier son mot de passe</Modal.Title>
+          <Modal.Title>Modifier mon mot de passe</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={validateFormAdd}>
@@ -164,7 +164,7 @@ export default function Dashboard () {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" type='submit'>
+          <Button variant="success" type='submit'>
             Valider
           </Button>
         </Modal.Footer>
