@@ -17,6 +17,7 @@ export default function Login () {
   let navigate = useNavigate();
   const [admin,setAdmin] = useState([]);
   const [verify, setVerify] = useState();
+  let id=0;
 
   
   const Validation = (e) =>{
