@@ -21,7 +21,7 @@ function App() {
         <Route path="Dashboard/:id" element={<Dashboard/>}/>
         <Route path="Admin" element={<ListAdmin/>}/>
         <Route path="Create" element={<CreateAdmin/>}/>
-        <Route path="*" element={<Home/>}/>
+        <Route path="*" element={<Login/>}/>
 
 
         
