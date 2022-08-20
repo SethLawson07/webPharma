@@ -2,11 +2,11 @@ import React,{useState,useEffect} from "react";
 import { Button,Modal,Form,Container, Table,InputGroup,FormControl ,Row,Col ,Stack} from "react-bootstrap";
 import NavDash from "./components/Navbar";
 import * as Icon from 'react-bootstrap-icons'
-import { Link,useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import  {db} from '../../config/firebase'
 import {collection, query, orderBy, onSnapshot,addDoc,deleteDoc,updateDoc,doc,setDoc,where, Timestamp,startAt} from "firebase/firestore"
 
-export default function ListAssurance () {
+export default function ListCommune () {
  
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -22,36 +22,28 @@ export default function ListAssurance () {
     setNomUpdate(nom)
     setIdUpdate(id)
   }
-  const [assurance, setAssurance] = useState();
-  const [assurance1, setAssurance1] = useState();
+  const [commune, setcommune] = useState();
+  const [commune1, setcommune1] = useState();
   let [counter, setCounter] = useState(1);
-  const navigate = useNavigate();
-
-  const order = (a, b) => {
-    if(a.firstname < b.firstname) { return -1; }
-    if(a.firstname > b.firstname) { return 1; }
-    return 0;
-}
   
   
   const validateFormAdd = (e) => {
-    //Variable Regex pour valider le champs nom de l'assurance   
+    //Variable Regex pour valider le champs nom de la commune  
     const re1 =/[^A-zÀ-ú 0-9\-(.,;:)]/g  
 
   
-    if(!nom  || re1.test(nom)) {alert("L' assurance n'est pas valide.🙂"); }
-    
+    if(!nom  || re1.test(nom)) alert("La commune n'est pas valide.🙂")
     else {handleSubmit(e)}
   
     
   }
 
   const validateFormUpdate = (e) => {
-    //Variable Regex pour valider le champs nom de l'assurance   
+    //Variable Regex pour valider le champs nom de la commune   
     const re1 =/[^A-zÀ-ú 0-9\-(.,;:)]/g  
 
   
-    if(!nomUpdate  || re1.test(nomUpdate)) alert("L' assurance n'est pas valide.🙂")
+    if(!nomUpdate  || re1.test(nomUpdate)) alert("La commune n'est pas valide.🙂")
     else {handleUpdate(e)}
   
     
@@ -61,7 +53,7 @@ export default function ListAssurance () {
 const handleSubmit = async (e) => {
   e.preventDefault()
   try {
-    await addDoc(collection(db, 'Assurance'), {
+    await addDoc(collection(db, 'Commune'), {
       Nom: nom,
       created: Timestamp.now()
     });
@@ -77,9 +69,9 @@ const handleSubmit = async (e) => {
 // function to update insurance in firestore 
 const handleUpdate = async (e) => {
   e.preventDefault()
-  const AssuranceDocRef = doc(db, 'Assurance', idUpdate)
+  const communeDocRef = doc(db, 'Commune', idUpdate)
   try{
-    await updateDoc(AssuranceDocRef, {
+    await updateDoc(communeDocRef, {
       Nom: nomUpdate,
       
     })
@@ -96,11 +88,11 @@ const handleUpdate = async (e) => {
 
     
     //function to update insurance from firstore 
-    const updateInsurance = async (id) => {
+    const updateCommune = async (id) => {
      // e.preventDefault()
         try {
     
-        const updateRef = doc(db, "Assurance",id);
+        const updateRef = doc(db, "Commune",id);
     
         // Set the "Etat" field of the pharmacy
         await updateDoc(updateRef, {
@@ -119,7 +111,7 @@ const handleUpdate = async (e) => {
         }
  //function to delete insurance from firstore 
 const handleDelete = async (id) => {
-  const InsuranceDocRef = doc(db, 'Assurance', id)
+  const InsuranceDocRef = doc(db, 'Commune', id)
   try{
     await deleteDoc(InsuranceDocRef)
     alert(" succès! ✅")
@@ -128,37 +120,37 @@ const handleDelete = async (id) => {
   }
 }
 
-  const getInsurance = () => {
-    const q = query(collection(db, 'Assurance')//.endAt(2)//, orderBy('created', 'desc')
+  const getCommune = () => {
+    const q = query(collection(db, 'Commune')//.endAt(2)//, orderBy('created', 'desc')
   
     )
     onSnapshot(q, (querySnapshot) => {
-      setAssurance(querySnapshot.docs.map(doc => ({
+      setcommune(querySnapshot.docs.map(doc => ({
         id: doc.id,
         data: doc.data()
       })))
     })
-    console.log({ assurance });
+    console.log({ commune });
   }
 
-  const getInsurance1 = () => {
-    const q = query(collection(db, 'Assurance'),where('Nom','==',search)//.endAt(2)//, orderBy('created', 'desc')
+  const getCommune1 = () => {
+    const q = query(collection(db, 'Commune'),where('Nom','==',search)//.endAt(2)//, orderBy('created', 'desc')
   
     )
     onSnapshot(q, (querySnapshot) => {
-      setAssurance1(querySnapshot.docs.map(doc => ({
+      setcommune1(querySnapshot.docs.map(doc => ({
         id: doc.id,
         data: doc.data()
       })))
     })
-    //console.log({ assurance });
+    //console.log({ commune });
   }
 
 
   useEffect(() => {
-    getInsurance();
-    getInsurance1();
-  }, [assurance]);
+    getCommune();
+    getCommune1();
+  }, [commune]);
   
   
 
@@ -178,7 +170,7 @@ const handleDelete = async (id) => {
   onChange={(e) => setSearch(e.target.value)} 
   value={search}
   />
- 
+  
   
   
 </Stack>
@@ -208,7 +200,7 @@ const handleDelete = async (id) => {
           </tr>
         </thead>
         <tbody>
-        {assurance?.map(({ id, data }) => (
+        {commune?.map(({ id, data }) => (
                   <tr >
                     <td>{counter++}</td>
                     <td>{data.Nom}  </td>
@@ -246,10 +238,10 @@ const handleDelete = async (id) => {
           </tr>
         </thead>
         <tbody>
-        {assurance1?.map(({ id, data }) => (
+        {commune1?.map(({ id, data }) => (
                   <tr >
                     <td>{counter++}</td>
-                    <td>{data.Nom }   </td>
+                    <td>{data.Nom}  </td>
                     
                     
                    
@@ -278,7 +270,7 @@ const handleDelete = async (id) => {
 
 <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Ajouter une assurance</Modal.Title>
+          <Modal.Title>Ajouter une commune</Modal.Title>
         </Modal.Header>
         <Form onSubmit={validateFormAdd}>
         <Modal.Body>
@@ -320,7 +312,7 @@ const handleDelete = async (id) => {
       
 <Modal show={showUpdate} onHide={handleCloseUpdate}>
         <Modal.Header closeButton>
-          <Modal.Title>Modifier une assurance</Modal.Title>
+          <Modal.Title>Modifier une commune</Modal.Title>
         </Modal.Header>
         <Form onSubmit={validateFormUpdate}>
         <Modal.Body>

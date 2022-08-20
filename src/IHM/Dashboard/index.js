@@ -12,6 +12,7 @@ import ListPharmacieGarde from "./ListePharmacieGarde";
 import { getAuth, signOut , sendPasswordResetEmail} from "firebase/auth";
 import  {db} from '../../config/firebase'
 import {collection, query, getDoc,doc,onSnapshot} from "firebase/firestore"
+import ListCommune from './ListCommune';
 
 
 
@@ -109,11 +110,12 @@ export default function Dashboard () {
       <Tab eventKey="Pharma" title="Pharmacies" >
       <ListPharmacie/>
       </Tab>
-      <Tab eventKey="PharmaGarde" title="Pharmacies de Garde" >
-      <ListPharmacieGarde/>
-      </Tab>
+      
       <Tab eventKey="Assurance" title="Assurances" >
       <ListAssurance/>
+      </Tab>
+      <Tab eventKey="Commune" title="Communes" >
+      <ListCommune/>
       </Tab>
       {Niveau ? 
         <Tab eventKey="Admin" title="Administrateurs" >

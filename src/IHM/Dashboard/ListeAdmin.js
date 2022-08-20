@@ -17,22 +17,23 @@ export default function ListAdmin () {
   const [password, setPassword] = useState('');
   const [nom, setNom] = useState('');
   const [prenom, setPrenom] = useState('');
-  const [numeroTel, setNumeroTel] = useState('+228')
+  const [numeroTel, setNumeroTel] = useState('')
   const [admin, setAdmin] = useState()
   let [counter, setCounter] = useState(1);
 
 
   const validateFormAdd = (e) => {
     //Variable Regex pour valider les champs   
-    const num = /^\+228\d{8}$/
+   // const num = /^\+228\d{8}$/
     const re1 =/[^A-zÀ-ú 0-9\-(.,;:)]/g  
     const re = /\S+@\S+\.\S+/
+    var num = /^\d+$/;
 
   
     if(!nom  || re1.test(nom)) alert("Le nom n'est pas valide.🙂")
    else if (!prenom  || re1.test(prenom)) alert("Le prenom n'est pas valide.🙂")
-    else if(!numeroTel || numeroTel.length !=12  ) alert("Le numéro de téléphone n'est pas valide.🙂")
-    else if(!num.test(numeroTel) && numeroTel.length!=12  ) alert("Le numéro de téléphone est incorrect : Ex : +22897997966")
+    else if(!numeroTel || numeroTel.length !=8  ) alert("Le numéro de téléphone n'est pas valide.🙂")
+    else if(!num.test(numeroTel)   ) alert("Le numéro de téléphone est incorrect : Ex : +22897997966")
     else if (!email || !re.test(email) ) alert('Oups ! Nous avons besoin d\'une adresse e-mail valide.🙂')
     else if (!password || password.length < 6) alert("Le mot de passe doit comporter au moins 6 caractères et au maximum 12 🧐."); 
     else {handleSubmit(e)}
@@ -55,7 +56,7 @@ export default function ListAdmin () {
         "Prenom" : prenom,
         "NumeroTel" : numeroTel,
         "Niveau" : false,
-        "Etat" : false,          
+        "Etat" : true,          
         "created": Timestamp.now()
         
        
@@ -162,14 +163,7 @@ export default function ListAdmin () {
     </Col>
    
     <Col xs={6} md={3}>
-    <Stack direction="horizontal" gap={1}>
-  <Form.Control className="me-auto" placeholder="Search" />
-  <Button variant="success">
-  <Icon.Search color="white" size={20}/>
-  </Button>
-  
-  
-</Stack>
+    
 
     </Col>
     <Col xs={6} md={3}></Col>
@@ -264,6 +258,7 @@ export default function ListAdmin () {
         placeholder="Numéro de téléphone"
         aria-label="Input group example"
         aria-describedby="btnGroupAddon"
+        maxLength="8"
         onChange={(e) => setNumeroTel(e.target.value)} 
         value={numeroTel}
       />
@@ -292,6 +287,7 @@ export default function ListAdmin () {
         aria-describedby="btnGroupAddon"
         onChange={(e) => setPassword(e.target.value)} 
         value={password}
+        maxLength="12"
       />
     </InputGroup>
 

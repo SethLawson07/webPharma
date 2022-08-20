@@ -13,7 +13,7 @@ export default function Home () {
   let [nbAssurance, setnbAssurance] = useState(0);
   let [nbAdmin, setnbAdmin] = useState(0);
   let [nbPharmacie, setnbPharmacie] = useState(0);
-  let [nbNpharmacie, setnbNpharmacie] = useState(0);
+  let [nbCommon, setnbCommon] = useState(0);
   const [assurance, setAssurance] = useState();
   let navigate = useNavigate();
 
@@ -36,12 +36,12 @@ const getPharmacy = () => {
   })
 };
 
-const getNpharmacy = () => {
+const getCommon = () => {
     
-  const q = query(collection(db, 'Pharmacie'),where('Degarde','==',true)
+  const q = query(collection(db, 'Commune')
   )
   onSnapshot(q, (querySnapshot) => {
-        setnbNpharmacie(querySnapshot.size)
+        setnbCommon(querySnapshot.size)
   })
 };
 
@@ -62,7 +62,7 @@ useEffect(() => {
   getInsurance();
   getPharmacy();
   getAdmin();
-  getNpharmacy();
+  getCommon();
 }, []);
 
 
@@ -97,9 +97,10 @@ useEffect(() => {
     <tr>
       
       <th>Nombre de pharmacies</th>
-      <th>Nombre de pharmacies de gardes</th>
-      <th>Nombre d'admins</th>
       <th>Nombre d'assurances</th>
+      <th>Nombre de communes</th>
+      <th>Nombre d'administrateurs</th>
+      
      
       
     </tr>
@@ -110,9 +111,11 @@ useEffect(() => {
       
    
       <td>{nbPharmacie} </td>
-      <td> {nbNpharmacie} </td>
-      <td>{nbAdmin} </td>
       <td>{nbAssurance} </td>
+      <td>{nbCommon}</td>
+      <td>{nbAdmin} </td>
+      
+      
       
       
       

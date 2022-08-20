@@ -44,7 +44,7 @@ export default function Login () {
        
           
           alert(" succès! ✅")
-          navigate('/Dashboard/'+user.uid, { state: { email : user.email } })          
+          navigate('/Dashboard', { state: { email : user.email } })          
         })
         .catch((error) => {
           alert("Informations incorrectes, veuillez remplir vos informations de connexion")

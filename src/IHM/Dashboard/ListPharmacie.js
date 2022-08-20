@@ -109,13 +109,11 @@ export default function ListPharmacie () {
     </Col>
     <Col xs={6} md={3}>
     <Stack direction="horizontal" gap={1}>
-  <Form.Control className="me-auto" placeholder="Search"
+  <Form.Control className="me-auto" placeholder="Search..."
     onChange={(e) => setSearch(e.target.value)} 
     value={search}
   />
-  <Button variant="success">
-  <Icon.Search color="white" size={20}/>
-  </Button>
+ 
   
   
 </Stack>
