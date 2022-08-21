@@ -133,7 +133,7 @@ export default function ListPharmacie () {
       <th>Tél</th>
       <th>Assurances</th>
       <th>Commune</th>
-      <th>Localite</th>
+    
     
       <th>Certification</th>
       
@@ -147,7 +147,7 @@ export default function ListPharmacie () {
               <td>{data.NumeroTel}</td>
               <td>{data.Assurance}</td>
               <td>{data.Commune} </td>
-              <td>{data.Localite} </td>
+             
               <td>{data.Certificate ? 
                <Button variant="success"  className='text-right' onClick={() => updateFalse(id)}><Icon.CheckSquareFill color="white" size="25"/></Button>
               :              
@@ -174,7 +174,7 @@ export default function ListPharmacie () {
       <th>Tél</th>
       <th>Assurances</th>
       <th>Commune</th>
-      <th>Localite</th>
+   
     
       <th>Certification</th>
       
@@ -188,7 +188,7 @@ export default function ListPharmacie () {
               <td>{data.NumeroTel}</td>
               <td>{data.Assurance}</td>
               <td>{data.Commune} </td>
-              <td>{data.Localite} </td>
+             
               <td>{data.Certificate ? 
                <Button variant="success"  className='text-right' onClick={() => updateFalse(id)}><Icon.CheckSquareFill color="white" size="25"/></Button>
               :              
